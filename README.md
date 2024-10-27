@@ -1,10 +1,10 @@
 # serviaseo
 
-# Prueba Técnica Java Backend: Facturador ServiAseo
+# Prueba Técnica Java Backend
 
 Configuración de Ambiente
-1. debe Instalar Java JDK 17 y JRE 1.8
-2. Instalar ultima versión de Maven
+1. Instalar Java JDK 17 y JRE 1.8
+2. Instalar y confirmar versión actualizada de Maven
 3. Configurar variables de entorno para Maven (ver manual de instalación de Maven)
 4. si esta trabajando con windows, instalar WAMP o XAMPP para la base de datos MariaDB, Si esta trabajando con Linux, instalar LAMP para la misma base de datos, si ya tiene un servidor de MariaDB o MySQL en alguna otra instancia, debe configurarla en el archivo properties del proyecto
 #
