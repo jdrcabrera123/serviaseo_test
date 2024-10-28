@@ -1,43 +1,42 @@
 package com.globalhitts.serviaseo.controller;
 
-import com.globalhitts.serviaseo.DTO.DetalleFacturaDTO;
-import com.globalhitts.serviaseo.entity.Cliente;
-import com.globalhitts.serviaseo.entity.Factura;
-import com.globalhitts.serviaseo.service.ClienteService;
+import com.globalhitts.serviaseo.DTO.InvoiceDetailDTO;
+import com.globalhitts.serviaseo.entity.Client;
+import com.globalhitts.serviaseo.entity.Invoice;
+import com.globalhitts.serviaseo.service.ClientService;
 import com.globalhitts.serviaseo.service.EmailService;
-import com.globalhitts.serviaseo.service.FacturaService;
+import com.globalhitts.serviaseo.service.InvoiceService;
 import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/facturas")
-public class FacturaController {
+public class InvoiceController {
 
-	private final ClienteService clienteService;
-	private final FacturaService facturaService;
+	private final ClientService clienteService;
+	private final InvoiceService facturaService;
 	private final EmailService emailService;
 
-	public FacturaController(ClienteService clienteService, FacturaService facturaService, EmailService emailService) {
+	public InvoiceController(ClientService clienteService, InvoiceService facturaService, EmailService emailService) {
 		this.clienteService = clienteService;
 		this.facturaService = facturaService;
 		this.emailService = emailService;
 	}
 
 	@PostMapping("/crear")
-	public ResponseEntity<String> crearFactura(@RequestBody Factura factura) {
+	public ResponseEntity<String> crearFactura(@RequestBody Invoice factura) {
 		int tipoDocumento = factura.getTipoDocumento();
 		int numeroDocumento = factura.getNumeroDocumento();
-		Optional<Cliente> clienteOpt = clienteService.findClienteByTipoDocumentoAndNumeroDocumento(tipoDocumento,
+		Optional<Client> clienteOpt = clienteService.findClienteByTipoDocumentoAndNumeroDocumento(tipoDocumento,
 				numeroDocumento);
 		if (clienteOpt.isPresent()) {
-			Cliente cliente = clienteOpt.get();
+			Client cliente = clienteOpt.get();
 			int idCliente = cliente.getIdCliente();
 
 			String productosJson = new Gson().toJson(factura.getProductos());
@@ -45,22 +44,22 @@ public class FacturaController {
 			facturaService.crearFactura(idCliente, factura, productosJson);
 
 			String toEmail = cliente.getEmail();
-			String subject = "Factura Generada - ID: " + factura.getIdFactura();
-			String body = "Se ha generado una factura con éxito.\n\n" + "Detalles de la factura:\n" + "ID Cliente: "
-					+ idCliente + "\n" + "ID Limpieza: " + factura.getIdLimpieza() + "\n" + "Productos: "
+			String subject = "Invoice Created - ID: " + factura.getIdFactura();
+			String body = "An invoice has been successfully generated..\n\n" + "Invoice detail:\n" + "user ID: "
+					+ idCliente + "\n" + "ID Clean: " + factura.getIdLimpieza() + "\n" + "Products: "
 					+ productosJson;
 
 			emailService.enviarFactura(toEmail, subject, body);
 
-			return new ResponseEntity<>("Factura creada y enviada al cliente.", HttpStatus.CREATED);
+			return new ResponseEntity<>("Invoice generated and sent to customer.", HttpStatus.CREATED);
 		} else {
-			return new ResponseEntity<>("El cliente no existe. Por favor, registre al cliente.", HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>("The user does not exist, please register the user.", HttpStatus.NOT_FOUND);
 		}
 	}
 
 	@GetMapping("buscar/{idFactura}")
-	public DetalleFacturaDTO obtenerFactura(@PathVariable int idFactura) {
-		DetalleFacturaDTO dto = new DetalleFacturaDTO();
+	public InvoiceDetailDTO obtenerFactura(@PathVariable int idFactura) {
+		InvoiceDetailDTO dto = new InvoiceDetailDTO();
 		List<String> facturas = facturaService.listarFactura(idFactura);
 		String facturaCompleta = facturas.get(0);
 		String[] facturasArray = facturaCompleta.split(",(?![^\\[]*\\])");
@@ -82,13 +81,13 @@ public class FacturaController {
 	}
 
 	 @GetMapping("/todas")
-	    public ResponseEntity<List<DetalleFacturaDTO>> listarFacturas() {
+	    public ResponseEntity<List<InvoiceDetailDTO>> listarFacturas() {
 	        List<String> facturas = facturaService.listarFacturas();
-	        List<DetalleFacturaDTO> listaFacturasDTO = new ArrayList<>();
+	        List<InvoiceDetailDTO> listaFacturasDTO = new ArrayList<>();
 
 	        for (String factura : facturas) {
 	            String[] facturaArray = factura.split(",(?![^\\[]*\\])");
-	            DetalleFacturaDTO dto = new DetalleFacturaDTO();
+	            InvoiceDetailDTO dto = new InvoiceDetailDTO();
 
 	            dto.setIdFactura(facturaArray[0]);
 	            dto.setFechaLimpieza(facturaArray[1]);

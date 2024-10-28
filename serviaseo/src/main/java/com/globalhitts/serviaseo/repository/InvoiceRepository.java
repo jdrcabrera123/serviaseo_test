@@ -3,16 +3,14 @@ package com.globalhitts.serviaseo.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.globalhitts.serviaseo.DTO.DetalleFacturaDTO;
-import com.globalhitts.serviaseo.entity.Factura;
+import com.globalhitts.serviaseo.entity.Invoice;
 
 @Repository
-public interface FacturaRepository extends JpaRepository<Factura, Integer> {
+public interface InvoiceRepository extends JpaRepository<Invoice, Integer> {
     
     
     @Query(value = "CALL crear_factura(:idCliente, :idLimpieza, :productos)", nativeQuery = true)

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DetalleFacturaDTO {
+public class InvoiceDetailDTO {
 	private String idFactura;
 	private String fechaLimpieza;
 	private String numeroDocumento;
